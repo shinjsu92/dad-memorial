@@ -25,24 +25,34 @@ The site is plain HTML/CSS/JS — no build step. Two things to set up: **Firebas
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'shinjsu92@gmail.com';
+    }
     match /photos/{doc} {
       allow read: if true;
-      allow create: if request.resource.data.url is string
+      // Anyone can submit a photo, but only as "pending" (approved: false).
+      allow create: if request.resource.data.approved == false
+        && request.resource.data.url is string
+        && request.resource.data.path is string
         && request.resource.data.caption is string
         && request.resource.data.caption.size() <= 100
         && request.resource.data.uploader is string
         && request.resource.data.uploader.size() <= 30;
-      allow update, delete: if false;
+      // Only the family account can approve or delete.
+      allow update, delete: if isAdmin();
     }
     match /guestbook/{doc} {
       allow read: if true;
-      allow create: if request.resource.data.name is string
+      // Posting requires the memorial code.
+      allow create: if request.resource.data.passcode == '0705'
+        && request.resource.data.name is string
         && request.resource.data.name.size() > 0
         && request.resource.data.name.size() <= 30
         && request.resource.data.message is string
         && request.resource.data.message.size() > 0
         && request.resource.data.message.size() <= 1000;
-      allow update, delete: if false;
+      allow update, delete: if isAdmin();
     }
   }
 }
@@ -50,7 +60,7 @@ service cloud.firestore {
 
 4. Click **Publish**.
 
-Visitors can read and add entries, but nobody can edit or delete through the site — if something inappropriate is ever posted, you delete it yourself in the Firebase console (Firestore → the collection → delete the document).
+Photos submitted by visitors are hidden until you approve them on the site (sign in via the "가족 로그인" link in the footer). Guestbook posts require the memorial code. If anything inappropriate slips through, you can delete it on the site (photos) or in the Firebase console (guestbook: Firestore → `guestbook` → delete the document).
 
 ## 4. Enable Storage (photo files)
 
@@ -64,8 +74,11 @@ service firebase.storage {
   match /b/{bucket}/o {
     match /photos/{file} {
       allow read: if true;
-      allow write: if request.resource.size < 8 * 1024 * 1024
+      allow create: if request.resource.size < 8 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
+      allow update: if false;
+      allow delete: if request.auth != null
+        && request.auth.token.email == 'shinjsu92@gmail.com';
     }
     match /{allPaths=**} {
       allow read, write: if false;
@@ -76,7 +89,15 @@ service firebase.storage {
 
 4. Click **Publish**.
 
-Only images under 8 MB can be uploaded, and only into the `photos/` folder. (The site also shrinks photos in the browser before uploading, so most uploads are well under 1 MB.)
+Only images under 8 MB can be uploaded, only into the `photos/` folder, and only the family account can delete files. (The site also shrinks photos in the browser before uploading, so most uploads are well under 1 MB.)
+
+## 4b. Enable Google sign-in (for the family login)
+
+The photo approval queue requires you to sign in with Google on the site:
+
+1. Firebase console → **Build → Authentication → Get started**.
+2. **Sign-in method** tab → **Google** → Enable → pick a support email → Save.
+3. On the site, use the small **가족 로그인** link in the footer. Only `shinjsu92@gmail.com` is treated as the family account — anyone else who signs in is rejected.
 
 ## 5. Deploy to GitHub Pages
 

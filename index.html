@@ -50,6 +50,12 @@
         <code>js/firebase-config.js</code> 파일에 설정 값을 입력해 주세요.
       </div>
 
+      <div id="admin-pending" class="admin-pending" hidden>
+        <h3 class="admin-title">승인 대기 사진</h3>
+        <div id="pending-grid" class="photo-grid" aria-live="polite"></div>
+        <p id="pending-empty" class="empty-text" hidden>승인 대기 중인 사진이 없습니다.</p>
+      </div>
+
       <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
       <p id="gallery-empty" class="empty-text" hidden>아직 등록된 사진이 없습니다. 첫 번째 사진을 올려주세요.</p>
     </section>
@@ -74,7 +80,13 @@
           <label for="gb-message">추모의 글</label>
           <textarea id="gb-message" maxlength="1000" rows="4" placeholder="따뜻한 말씀을 남겨주세요" required></textarea>
         </div>
+        <div class="form-row">
+          <label for="gb-code">추모 코드 (숫자 4자리)</label>
+          <input type="text" id="gb-code" inputmode="numeric" maxlength="4" placeholder="····" required />
+          <p class="form-hint">코드는 아버지가 잠들어 계신 곳에서 확인하실 수 있습니다.</p>
+        </div>
         <button type="submit" class="btn btn-primary">글 남기기</button>
+        <p id="gb-status" class="form-status" role="status"></p>
       </form>
 
       <ul id="guestbook-list" class="guestbook-list" aria-live="polite"></ul>
@@ -84,6 +96,11 @@
 
   <footer class="footer">
     <p>가족 일동 올림</p>
+    <p class="admin-bar">
+      <button id="admin-login" class="linklike" type="button">가족 로그인</button>
+      <span id="admin-info" hidden></span>
+      <button id="admin-logout" class="linklike" type="button" hidden>로그아웃</button>
+    </p>
   </footer>
 
   <!-- ===== 사진 업로드 모달 ===== -->
@@ -104,6 +121,7 @@
           <label for="up-caption">사진 설명 (선택)</label>
           <input type="text" id="up-caption" maxlength="100" placeholder="언제, 어디서 찍은 사진인가요?" />
         </div>
+        <p class="form-hint">등록하신 사진은 가족 확인 후 사진첩에 게시됩니다.</p>
         <div class="modal-actions">
           <button type="button" class="btn" data-close-modal>취소</button>
           <button type="submit" class="btn btn-primary" id="upload-submit">올리기</button>

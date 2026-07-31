@@ -312,6 +312,103 @@ img { max-width: 100%; display: block; }
   overflow-wrap: break-word;
 }
 
+.form-hint {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+}
+
+.form-status {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #a05252;
+  min-height: 1.2em;
+}
+
+.form-status.ok { color: var(--accent-dark); }
+
+/* ===== 관리자(가족) ===== */
+.admin-pending {
+  margin-bottom: 2.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--accent);
+  border-radius: 8px;
+  background: #fffdf7;
+}
+
+.admin-title {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--accent-dark);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.pending-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem 0.7rem;
+}
+
+.pending-actions .btn {
+  flex: 1;
+  padding: 0.35rem 0;
+  font-size: 0.82rem;
+  border-radius: 6px;
+}
+
+.btn-danger {
+  background: var(--white);
+  border-color: #c9a3a3;
+  color: #a05252;
+}
+
+.btn-danger:hover {
+  background: #a05252;
+  border-color: #a05252;
+  color: var(--white);
+}
+
+.photo-del {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(20, 19, 17, 0.55);
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.photo-del:hover { background: #a05252; }
+
+.photo-card { position: relative; }
+
+.admin-bar {
+  margin-top: 0.75rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+}
+
+.admin-bar .linklike {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0 0.25rem;
+}
+
+.admin-bar .linklike:hover { color: var(--accent-dark); }
+
+.admin-bar #admin-info { margin: 0 0.25rem; color: var(--accent-dark); }
+
 /* ===== 푸터 ===== */
 .footer {
   text-align: center;
