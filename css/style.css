@@ -417,6 +417,51 @@ img { max-width: 100%; display: block; }
 
 .admin-bar #admin-info { margin: 0 0.25rem; color: var(--accent-dark); }
 
+/* ===== 오시는 길 ===== */
+.location-card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.location-info {
+  text-align: left;
+  margin-bottom: 1.75rem;
+}
+
+.location-info > div {
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--paper-alt);
+}
+
+.location-info > div:last-child { border-bottom: none; }
+
+.location-info dt {
+  flex: 0 0 5.5em;
+  font-size: 0.85rem;
+  color: var(--accent-dark);
+  letter-spacing: 0.05em;
+  padding-top: 0.1em;
+}
+
+.location-info dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.location-btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.location-hint { margin-top: 1rem; }
+
 /* ===== 푸터 ===== */
 .footer {
   text-align: center;
