@@ -20,8 +20,38 @@ body {
   font-family: var(--sans);
   font-weight: 300;
   color: var(--ink);
-  background: var(--paper);
+  background:
+    linear-gradient(180deg, rgba(138, 123, 92, 0.04), transparent 320px),
+    var(--paper);
   line-height: 1.7;
+}
+
+/* 상단 금색 리본 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-dark), #c9b585, var(--accent-dark));
+  z-index: 100;
+}
+
+/* 스크롤 시 부드럽게 나타나기 */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
 
 img { max-width: 100%; display: block; }
@@ -29,23 +59,28 @@ img { max-width: 100%; display: block; }
 /* ===== 상단(히어로) ===== */
 .hero {
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(138, 123, 92, 0.08), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 50% 12%, rgba(201, 181, 133, 0.16), transparent),
+    radial-gradient(ellipse at 50% 100%, rgba(138, 123, 92, 0.06), transparent 55%),
     var(--paper);
   border-bottom: 1px solid var(--line);
-  padding: 5rem 1.5rem 4rem;
+  padding: 5.5rem 1.5rem 4rem;
   text-align: center;
 }
 
 .hero-inner { max-width: 640px; margin: 0 auto; }
 
 .portrait-frame {
-  width: 180px;
-  height: 224px;
-  margin: 0 auto 2rem;
-  border: 1px solid var(--line);
+  width: 240px;
+  height: 300px;
+  margin: 0 auto 2.25rem;
+  border: 1px solid #cfc5ae;
+  outline: 1px solid var(--line);
+  outline-offset: 5px;
   background: var(--white);
-  padding: 8px;
-  box-shadow: 0 8px 24px rgba(43, 42, 38, 0.1);
+  padding: 10px;
+  box-shadow:
+    0 14px 40px rgba(43, 42, 38, 0.16),
+    0 2px 8px rgba(43, 42, 38, 0.08);
   position: relative;
 }
 
@@ -79,13 +114,47 @@ img { max-width: 100%; display: block; }
   margin-bottom: 0.75rem;
 }
 
+.hero-eyebrow::before,
+.hero-eyebrow::after {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+  margin: 0 0.8em;
+}
+
+.hero-eyebrow::after {
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
 .hero-name {
   font-family: var(--serif);
-  font-size: 2.6rem;
+  font-size: 2.9rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   margin-bottom: 0.5rem;
 }
+
+.hero-family {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  margin-bottom: 1.5rem;
+}
+
+.hero-family .fam-label {
+  font-size: 0.78rem;
+  color: var(--accent-dark);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.05em 0.55em;
+  margin-right: 0.2em;
+}
+
+.hero-family .fam-sep { margin: 0 0.5em; color: var(--line); }
 
 .hero-title {
   font-family: var(--serif);
@@ -99,7 +168,7 @@ img { max-width: 100%; display: block; }
   font-family: var(--serif);
   color: var(--ink-soft);
   letter-spacing: 0.1em;
-  margin-bottom: 1.75rem;
+  margin-bottom: 0.9rem;
 }
 
 .hero-message {
@@ -146,12 +215,30 @@ img { max-width: 100%; display: block; }
 
 .section-head { text-align: center; margin-bottom: 2.5rem; }
 
+.section-head::before {
+  content: "❁";
+  display: block;
+  color: var(--accent);
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+  opacity: 0.8;
+}
+
 .section-head h2 {
   font-family: var(--serif);
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.section-head h2::after {
+  content: "";
+  display: block;
+  width: 46px;
+  height: 1px;
+  margin: 0.75rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
 .section-sub { color: var(--ink-soft); margin-bottom: 1.5rem; }
@@ -218,25 +305,26 @@ img { max-width: 100%; display: block; }
 }
 
 .photo-card {
-  border: none;
-  padding: 0;
+  border: 1px solid var(--line);
+  padding: 7px;
   background: var(--white);
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(43, 42, 38, 0.08);
+  box-shadow: 0 3px 10px rgba(43, 42, 38, 0.09);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.25s, box-shadow 0.25s;
 }
 
 .photo-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(43, 42, 38, 0.14);
+  transform: translateY(-4px) rotate(-0.4deg);
+  box-shadow: 0 12px 26px rgba(43, 42, 38, 0.16);
 }
 
 .photo-card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  border-radius: 2px;
 }
 
 .photo-card .photo-meta {
@@ -292,9 +380,23 @@ img { max-width: 100%; display: block; }
 .guestbook-item {
   background: var(--white);
   border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1rem;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(43, 42, 38, 0.05);
+}
+
+.guestbook-item::before {
+  content: "\201C";
+  position: absolute;
+  top: 0.4rem;
+  right: 1rem;
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--paper-alt);
 }
 
 .guestbook-item .gb-head {
@@ -473,10 +575,21 @@ img { max-width: 100%; display: block; }
 /* ===== 푸터 ===== */
 .footer {
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: 3.5rem 1.5rem;
   color: var(--ink-soft);
   font-family: var(--serif);
   letter-spacing: 0.1em;
+  background: var(--paper-alt);
+  border-top: 1px solid var(--line);
+}
+
+.footer::before {
+  content: "❁";
+  display: block;
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
 }
 
 /* ===== 모달 ===== */
@@ -578,8 +691,11 @@ img { max-width: 100%; display: block; }
 
 /* ===== 모바일 ===== */
 @media (max-width: 600px) {
-  .hero { padding: 3.5rem 1.25rem 3rem; }
-  .hero-name { font-size: 2.1rem; }
+  .hero { padding: 4rem 1.25rem 3rem; }
+  .hero-name { font-size: 2.2rem; }
+  .portrait-frame { width: 200px; height: 250px; }
+  .hero-eyebrow::before,
+  .hero-eyebrow::after { width: 24px; }
   .section { padding: 3rem 1.25rem; }
   .photo-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .modal-card { margin: 6vh 1rem 0; }

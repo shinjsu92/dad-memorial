@@ -5,6 +5,24 @@ const GUESTBOOK_CODE = "0705";
 
 const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("YOUR_");
 
+// ===== 스크롤 시 부드럽게 나타나기 =====
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.12 }
+);
+
+document.querySelectorAll("main section, .footer").forEach((el) => {
+  el.classList.add("reveal");
+  revealObserver.observe(el);
+});
+
 // ===== 공통 요소 =====
 const photoGrid = document.getElementById("photo-grid");
 const galleryEmpty = document.getElementById("gallery-empty");
