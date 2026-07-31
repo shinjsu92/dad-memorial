@@ -428,6 +428,14 @@ img { max-width: 100%; display: block; }
   text-align: center;
 }
 
+.location-name {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.25rem;
+}
+
 .location-info {
   text-align: left;
   margin-bottom: 1.75rem;
