@@ -87,6 +87,14 @@ img { max-width: 100%; display: block; }
   margin-bottom: 0.5rem;
 }
 
+.hero-title {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--accent-dark);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.4rem;
+}
+
 .hero-dates {
   font-family: var(--serif);
   color: var(--ink-soft);
