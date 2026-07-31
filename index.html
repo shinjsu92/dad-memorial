@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>故 신재호 님을 기억하며</title>
+  <meta name="description" content="사랑하는 아버지를 추모하는 공간입니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== 상단 ===== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="portrait-frame">
+        <!-- 아버지 사진으로 교체하세요: assets/portrait.jpg -->
+        <img src="assets/portrait.jpg" alt="아버지 영정 사진" id="portrait"
+             onerror="this.parentElement.classList.add('no-photo')" />
+        <span class="portrait-fallback">遺&nbsp;影</span>
+      </div>
+      <p class="hero-eyebrow">삼가 고인의 명복을 빕니다</p>
+      <h1 class="hero-name">故 신재호</h1>
+      <p class="hero-dates">1957. 06. 03 ~ 2026. 07. 27</p>
+      <p class="hero-message">
+        사랑하는 아버지, 당신이 남겨주신 따뜻한 기억을<br />
+        이곳에 모아 오래도록 간직하려 합니다.
+      </p>
+      <nav class="hero-nav">
+        <a href="#gallery">사진첩</a>
+        <span aria-hidden="true">·</span>
+        <a href="#guestbook">방명록</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== 사진첩 ===== -->
+    <section id="gallery" class="section">
+      <div class="section-head">
+        <h2>사진첩</h2>
+        <p class="section-sub">함께한 순간들을 나누어 주세요.</p>
+        <button id="open-upload" class="btn btn-primary">사진 올리기</button>
+      </div>
+
+      <div id="setup-notice-gallery" class="setup-notice" hidden>
+        아직 Firebase 설정이 완료되지 않아 사진첩을 불러올 수 없습니다.
+        <code>js/firebase-config.js</code> 파일에 설정 값을 입력해 주세요.
+      </div>
+
+      <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
+      <p id="gallery-empty" class="empty-text" hidden>아직 등록된 사진이 없습니다. 첫 번째 사진을 올려주세요.</p>
+    </section>
+
+    <!-- ===== 방명록 ===== -->
+    <section id="guestbook" class="section section-alt">
+      <div class="section-head">
+        <h2>방명록</h2>
+        <p class="section-sub">고인께 전하고 싶은 마음을 남겨주세요.</p>
+      </div>
+
+      <div id="setup-notice-guestbook" class="setup-notice" hidden>
+        아직 Firebase 설정이 완료되지 않아 방명록을 사용할 수 없습니다.
+      </div>
+
+      <form id="guestbook-form" class="guestbook-form">
+        <div class="form-row">
+          <label for="gb-name">이름</label>
+          <input type="text" id="gb-name" maxlength="30" placeholder="성함을 입력해 주세요" required />
+        </div>
+        <div class="form-row">
+          <label for="gb-message">추모의 글</label>
+          <textarea id="gb-message" maxlength="1000" rows="4" placeholder="따뜻한 말씀을 남겨주세요" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">글 남기기</button>
+      </form>
+
+      <ul id="guestbook-list" class="guestbook-list" aria-live="polite"></ul>
+      <p id="guestbook-empty" class="empty-text" hidden>아직 남겨진 글이 없습니다.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>가족 일동 올림</p>
+  </footer>
+
+  <!-- ===== 사진 업로드 모달 ===== -->
+  <div id="upload-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="upload-title">
+      <h3 id="upload-title">사진 올리기</h3>
+      <form id="upload-form">
+        <div class="form-row">
+          <label for="up-file">사진 선택</label>
+          <input type="file" id="up-file" accept="image/*" required />
+        </div>
+        <div class="form-row">
+          <label for="up-name">올리는 분 (선택)</label>
+          <input type="text" id="up-name" maxlength="30" placeholder="이름" />
+        </div>
+        <div class="form-row">
+          <label for="up-caption">사진 설명 (선택)</label>
+          <input type="text" id="up-caption" maxlength="100" placeholder="언제, 어디서 찍은 사진인가요?" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" data-close-modal>취소</button>
+          <button type="submit" class="btn btn-primary" id="upload-submit">올리기</button>
+        </div>
+        <p id="upload-status" class="upload-status" role="status"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 사진 크게 보기 ===== -->
+  <div id="lightbox" class="lightbox" hidden>
+    <button class="lightbox-close" aria-label="닫기">&times;</button>
+    <button class="lightbox-prev" aria-label="이전 사진">&#8249;</button>
+    <figure>
+      <img id="lightbox-img" src="" alt="" />
+      <figcaption id="lightbox-caption"></figcaption>
+    </figure>
+    <button class="lightbox-next" aria-label="다음 사진">&#8250;</button>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
