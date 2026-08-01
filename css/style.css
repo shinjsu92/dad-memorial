@@ -137,24 +137,89 @@ img { max-width: 100%; display: block; }
   margin-bottom: 0.5rem;
 }
 
-.hero-family {
+.hero-family { margin-bottom: 1.75rem; }
+
+.fam-caption {
   font-family: var(--serif);
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-  letter-spacing: 0.08em;
-  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.3em;
+  color: var(--accent-dark);
+  margin-bottom: 0.9rem;
 }
 
-.hero-family .fam-label {
-  font-size: 0.78rem;
-  color: var(--accent-dark);
+.fam-caption::before,
+.fam-caption::after {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+  margin: 0 0.7em;
+}
+
+.fam-caption::after {
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.fam-cards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.fam-card {
+  flex: 1 1 240px;
+  max-width: 290px;
+  background: rgba(255, 255, 255, 0.75);
   border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem 1.2rem;
+  text-align: center;
+}
+
+.fam-name {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.7rem;
+}
+
+.fam-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--accent-dark);
+  border: 1px solid var(--accent);
   border-radius: 999px;
   padding: 0.05em 0.55em;
-  margin-right: 0.2em;
+  margin-right: 0.35em;
+  vertical-align: 0.12em;
 }
 
-.hero-family .fam-sep { margin: 0 0.5em; color: var(--line); }
+.fam-list {
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.fam-list li {
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--paper-alt);
+  line-height: 1.45;
+}
+
+.fam-list li:first-child { border-top: none; }
+
+.fam-en {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
+}
 
 .hero-title {
   font-family: var(--serif);
