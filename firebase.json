@@ -7,6 +7,14 @@
       "**/node_modules/**",
       "README.md",
       "SETUP.md"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(css|js|html)",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      }
     ]
   }
 }
