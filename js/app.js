@@ -266,32 +266,48 @@ uploadModal.querySelectorAll("[data-close-modal]").forEach((el) =>
 
 uploadForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const file = document.getElementById("up-file").files[0];
-  if (!file) return;
+  const files = [...document.getElementById("up-file").files];
+  if (!files.length) return;
 
+  const uploader = document.getElementById("up-name").value.trim();
+  const caption = document.getElementById("up-caption").value.trim();
   uploadSubmit.disabled = true;
-  uploadStatus.textContent = "사진을 준비하는 중...";
+  let done = 0;
 
   try {
-    const blob = await resizeImage(file, 1600, 0.85);
-    uploadStatus.textContent = "업로드 중...";
+    for (const file of files) {
+      uploadStatus.textContent =
+        files.length > 1 ? `업로드 중... (${done + 1}/${files.length}장)` : "업로드 중...";
 
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const path = `photos/${id}.jpg`;
-    const storageRef = st.ref(storage, path);
-    await st.uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
-    const url = await st.getDownloadURL(storageRef);
+      const blob = await resizeImage(file, 1600, 0.85);
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const path = `photos/${id}.jpg`;
+      const storageRef = st.ref(storage, path);
+      await st.uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
+      const url = await st.getDownloadURL(storageRef);
 
-    await fs.addDoc(fs.collection(db, "photos"), {
-      url,
-      path,
-      caption: document.getElementById("up-caption").value.trim(),
-      uploader: document.getElementById("up-name").value.trim(),
-      approved: false,
-      createdAt: fs.serverTimestamp(),
-    });
+      await fs.addDoc(fs.collection(db, "photos"), {
+        url,
+        path,
+        caption,
+        uploader,
+        approved: false,
+        createdAt: fs.serverTimestamp(),
+      });
+      done++;
+    }
 
-    uploadStatus.textContent = "사진이 접수되었습니다. 가족 확인 후 게시됩니다. 감사합니다.";
+    notifyAdmin(
+      `[추모 홈페이지] 사진 승인 요청 (${done}장)`,
+      `${uploader || "익명"}님이 사진 ${done}장을 올렸습니다.` +
+        (caption ? `\n설명: ${caption}` : "") +
+        `\n\n사이트에서 '가족 로그인' 후 승인해 주세요.`
+    );
+
+    uploadStatus.textContent =
+      done > 1
+        ? `사진 ${done}장이 접수되었습니다. 가족 확인 후 게시됩니다. 감사합니다.`
+        : "사진이 접수되었습니다. 가족 확인 후 게시됩니다. 감사합니다.";
     uploadForm.reset();
     setTimeout(() => {
       uploadModal.hidden = true;
@@ -299,11 +315,23 @@ uploadForm.addEventListener("submit", async (e) => {
     }, 2000);
   } catch (err) {
     console.error("업로드 실패:", err);
-    uploadStatus.textContent = "업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+    uploadStatus.textContent =
+      done > 0
+        ? `${files.length}장 중 ${done}장만 업로드되었습니다. 나머지는 다시 시도해 주세요.`
+        : "업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.";
   } finally {
     uploadSubmit.disabled = false;
   }
 });
+
+// 새 소식(사진 요청·방명록)을 관리자 이메일로 알립니다.
+// Firestore 'mail' 컬렉션에 기록하면 Trigger Email 확장 프로그램이 발송합니다.
+function notifyAdmin(subject, text) {
+  fs.addDoc(fs.collection(db, "mail"), {
+    to: ADMIN_EMAIL,
+    message: { subject, text },
+  }).catch((err) => console.warn("알림 메일 기록 실패:", err));
+}
 
 // 휴대폰 사진이 너무 크지 않도록 긴 변 기준으로 줄여서 올립니다.
 function resizeImage(file, maxSize, quality) {
@@ -450,6 +478,10 @@ guestbookForm.addEventListener("submit", async (e) => {
       passcode: code,
       createdAt: fs.serverTimestamp(),
     });
+    notifyAdmin(
+      "[추모 홈페이지] 새 방명록 글",
+      `${name}님이 방명록에 글을 남겼습니다.\n\n${message.slice(0, 500)}`
+    );
     guestbookForm.reset();
     gbStatus.classList.add("ok");
     gbStatus.textContent = "소중한 글이 등록되었습니다. 감사합니다.";

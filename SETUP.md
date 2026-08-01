@@ -54,6 +54,18 @@ service cloud.firestore {
         && request.resource.data.message.size() <= 1000;
       allow update, delete: if isAdmin();
     }
+    match /mail/{doc} {
+      // The site writes notification requests here; the Trigger Email
+      // extension picks them up and emails the family. Nobody can read them.
+      allow read, update, delete: if false;
+      allow create: if request.resource.data.keys().hasOnly(['to', 'message'])
+        && request.resource.data.to == 'shinjsu92@gmail.com'
+        && request.resource.data.message.keys().hasOnly(['subject', 'text'])
+        && request.resource.data.message.subject is string
+        && request.resource.data.message.subject.size() <= 200
+        && request.resource.data.message.text is string
+        && request.resource.data.message.text.size() <= 2000;
+    }
   }
 }
 ```
@@ -98,6 +110,23 @@ The photo approval queue requires you to sign in with Google on the site:
 1. Firebase console → **Build → Authentication → Get started**.
 2. **Sign-in method** tab → **Google** → Enable → pick a support email → Save.
 3. On the site, use the small **가족 로그인** link in the footer. Only `shinjsu92@gmail.com` is treated as the family account — anyone else who signs in is rejected.
+
+## 4c. Email notifications (Trigger Email extension)
+
+To get an email at shinjsu92@gmail.com whenever someone submits a photo or writes in the guestbook:
+
+1. **Create a Gmail app password** (Gmail blocks plain password logins):
+   - Go to [myaccount.google.com](https://myaccount.google.com) → **Security** → make sure **2-Step Verification** is on.
+   - Then Security → **App passwords** (search "app passwords" in the account search bar) → create one named e.g. `memorial-site` → copy the 16-character password.
+2. In the Firebase console: **Extensions** (left sidebar, under Build or Run) → **Explore extensions** → search **"Trigger Email from Firestore"** (by Firebase) → **Install**.
+3. During install, configure:
+   - **Email documents collection:** `mail`
+   - **SMTP connection URI:** `smtps://shinjsu92%40gmail.com:YOUR_APP_PASSWORD@smtp.gmail.com:465` (note: `@` in the email is written `%40`; remove spaces from the app password)
+   - **Default FROM address:** `shinjsu92@gmail.com`
+   - Everything else can stay default.
+4. Make sure the Firestore rules include the `mail` collection block from section 3 above.
+
+The site writes a small document to the `mail` collection after each photo submission or guestbook post, and the extension emails it to you. The rules only allow mail addressed to you, with short subject/text — nobody can use it to email anyone else.
 
 ## 5. Deploy to GitHub Pages
 
