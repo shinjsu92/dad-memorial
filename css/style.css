@@ -563,6 +563,15 @@ img { max-width: 100%; display: block; }
 
 .photo-card { position: relative; }
 
+.footer-credit {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  margin-top: 0.5rem;
+}
+
 .admin-bar {
   margin-top: 0.75rem;
   font-family: var(--sans);
